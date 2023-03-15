@@ -5,4 +5,4 @@ This is a a useful and aesthetically pleasing dynamic to-do list web application
 Here is what it looks like:
 ![ScreenShot](/MERNToDo.PNG)
 
-Clone it and make some minor modifications to have your own personalized to-di-list applicatin!
+Clone it and make some minor modifications to have your own personalized to-do-list applicatin!
