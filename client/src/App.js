@@ -15,7 +15,7 @@ function App(){
 		GetTodos();
 		console.log(todos);
 	
-	}, []) // Here we are passing an empty array, so this once it loads and the component mounts
+	}, []) // Here we are passing an empty array, so this once it loads and the component mounts. Since array is empty there is no dependency so this happens only once. If there was an object in the array, it would trigger every time that object updated
 
 	const GetTodos = () => {
 		fetch(API_BASE + "/todos")
@@ -24,8 +24,8 @@ function App(){
 			.catch(err => console.error("Error: ", err));
 	}
 
-	const completeTodo = async id => {
-		const data = await fetch(API_BASE + "/todo/complete/" + id)
+	const completeTodo = async (id) => {
+		const data = await fetch(API_BASE + "/todo/complete/" + id) // data is a Promise object returned by fetch
 			.then(res => res.json());
 
 		setTodos(todos => todos.map(todo => {
@@ -36,11 +36,18 @@ function App(){
 		}))
 	}
 
-	const deleteTodo = async id => {
-		const data = await fetch(API_BASE + "/todo/delete/" + id, {method: "DELETE"})
-			.then(res => res.json());
+	const deleteTodo = async (id) => {
+		const data = await fetch(API_BASE + "/todo/delete/" + id, {method: "DELETE"}) // in server.js this calls mongoose's findByIdandDelete method
+			.then(res => res.json()); // Converts response to json when Promise object resolves
 				// Our todo should not be equal  
-			setTodos(todos => todos.filter(todo => todo._id !== data._id));
+			setTodos(todos => todos.filter(todo => todo._id !== data._id)); // Update todos in React component, removing the deleted todo from the array. If this line weren't there we would need to refresh page to make it go away
+	}
+
+	const deleteComplete = async () => {
+		const data = await fetch (API_BASE + "/todo/delete_complete/", {method: "DELETE"})
+			.then(res => res.json())
+			.catch(()=>console.log("fetch in deleteComplete failed!"));
+			setTodos(todos => todos.filter(todo => todo.complete === false));
 	}
 
 	const addTodo = async () => {
@@ -75,6 +82,7 @@ function App(){
 			</div>
 
 			<div className="addPopup" onClick={()=> setPopupActive(true)}>+</div>
+			<div className="deleteComplete" onClick={()=> deleteComplete()}>Delete Complete</div>
 
 			{/* Below, we're checking if the popup is active by checking the bool of popupActive. If it is we create all these HTML divs which will be the make new popup */}
 			{popupActive ? (

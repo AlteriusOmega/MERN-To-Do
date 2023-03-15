@@ -1,10 +1,10 @@
+// Remeber to do "npm start" in both the api and client directory. The api one starts the database on port 3001 and the client one starts the actual react application
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-
 const app = express();
-
 
 app.use(express.json());
 app.use(cors());
@@ -22,7 +22,6 @@ app.get("/todos", async (req, res) => {
     // So if we make a request to localhost:3001/todos, it will find the todos via line 20 Todo.find() using our model Todo defined in the file Todo.js which connects to our mongoose database, gets the todos we need and passes them back to this file as res
 })
 
-
 app.post("/todo/new", (req, res) => {
         // Below is going to create a new todo collection inside our MongoDB database when we go to localhost/todo/new URL
     const todo = new Todo({
@@ -36,7 +35,12 @@ app.post("/todo/new", (req, res) => {
 })
 
 app.delete("/todo/delete/:id", async (req, res) => {
-    const result = await Todo.findByIdAndDelete(req.params.id);
+    const result = await Todo.findByIdAndDelete(req.params.id); // findByIdAndDelete is part of Mongoose
+    res.json(result);
+})
+
+app.delete("/todo/delete_complete", async (req, res) => {
+    const result = await Todo.deleteMany({complete: true});
     res.json(result);
 })
 
